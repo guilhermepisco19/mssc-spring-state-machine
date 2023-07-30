@@ -17,8 +17,9 @@ import reactor.core.publisher.Mono;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-    private static final String PAYMENT_ID_HEADER = "payment_id";
+    protected static final String PAYMENT_ID_HEADER = "payment_id";
     private final PaymentRepository paymentRepository;
+    private final PaymentStateChangeInterceptor interceptor;
 
     private final StateMachineFactory<PaymentState, PaymentEvent> stateMachineFactory;
 
@@ -71,8 +72,12 @@ public class PaymentServiceImpl implements PaymentService {
         sm.stopReactively().subscribe();
 
         sm.getStateMachineAccessor()
-                .doWithAllRegions(sma -> sma.resetStateMachineReactively(
-                        new DefaultStateMachineContext<>(payment.getState(),null,null, null)));
+                .doWithAllRegions(sma -> {
+                    sma.addStateMachineInterceptor(interceptor);
+                    sma.resetStateMachineReactively(
+                            new DefaultStateMachineContext<>(payment.getState(), null, null, null));
+
+                });
 
         sm.startReactively().subscribe();
 
