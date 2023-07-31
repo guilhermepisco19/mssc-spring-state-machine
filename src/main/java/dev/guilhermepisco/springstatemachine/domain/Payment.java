@@ -1,9 +1,6 @@
 package dev.guilhermepisco.springstatemachine.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -20,6 +17,7 @@ import java.util.Objects;
 public class Payment {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     @Enumerated(EnumType.STRING)

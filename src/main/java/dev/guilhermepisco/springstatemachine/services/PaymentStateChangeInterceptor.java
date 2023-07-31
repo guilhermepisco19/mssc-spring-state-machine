@@ -11,6 +11,7 @@ import org.springframework.statemachine.state.State;
 import org.springframework.statemachine.support.StateMachineInterceptorAdapter;
 import org.springframework.statemachine.transition.Transition;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ public class PaymentStateChangeInterceptor extends StateMachineInterceptorAdapte
     private final PaymentRepository paymentRepository;
 
     @Override
+    @Transactional
     public void preStateChange(State<PaymentState, PaymentEvent> state, Message<PaymentEvent> message,
                                Transition<PaymentState, PaymentEvent> transition, StateMachine<PaymentState, PaymentEvent> stateMachine, StateMachine<PaymentState, PaymentEvent> rootStateMachine) {
         Optional.ofNullable(message)
